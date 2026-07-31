@@ -23,18 +23,27 @@ allowed_subjects = [
 
 Esto requiere configurar un GitHub Environment con el mismo nombre (`produccion`, etc.) en ambos repositorios, con las reglas de protección/aprobación correspondientes.
 
-## Limitación real de GitHub OIDC con `pull_request`
+## El claim `sub` real incluye IDs inmutables, no solo nombres
 
-El claim `sub` con formato `repo:<org>/<repo>:environment:<nombre>` **solo** lo emite GitHub para eventos como `push`, `workflow_dispatch` o `release` — no para `pull_request`, aunque el job declare `environment:`. En un evento `pull_request`, el `sub` siempre es `repo:<org>/<repo>:pull_request`, sin importar el ambiente. Si algún workflow necesita asumir el rol durante un `pull_request` (por ejemplo, un `terraform plan` comentado en el PR), hay que añadir ese patrón explícitamente:
+Los ejemplos genéricos de la documentación de GitHub muestran `sub` como `repo:<org>/<repo>:environment:<nombre>`, pero el valor real que GitHub firma en el token incluye además el ID numérico inmutable de la cuenta y del repositorio: `repo:<org>@<orgId>/<repo>@<repoId>:environment:<nombre>`. Un patrón `allowed_subjects` que no contemple esa parte **nunca hace match**, aunque el nombre de organización/repo/ambiente sea correcto — el error resultante en AWS es el genérico `Not authorized to perform sts:AssumeRoleWithWebIdentity`, sin pista de que el problema es el formato del `sub` y no el trust policy en sí.
+
+Para confirmar el valor exacto en cualquier repo, se puede decodificar el token dentro de un job real:
+
+```yaml
+- name: Ver claims del token OIDC
+  run: |
+    JWT=$(curl -sSL -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+      "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com" | jq -r '.value')
+    echo "$JWT" | cut -d. -f2 | base64 -d | jq .
+```
+
+Este módulo usa `StringLike` (no `StringEquals`) precisamente para poder comodinizar el ID sin tener que averiguarlo y hardcodearlo por repositorio:
 
 ```hcl
 allowed_subjects = [
-  "repo:JulianMediina/terraform-live:environment:produccion",
-  "repo:JulianMediina/terraform-live:pull_request",
+  "repo:JulianMediina@*/terraform-live@*:environment:produccion",
 ]
 ```
-
-El ambiente real que termina usando cada job de todos modos queda acotado por **qué secret `AWS_ROLE_ARN` expone GitHub** según el `environment:` del job — el `sub` amplio solo decide si GitHub deja pasar el `AssumeRoleWithWebIdentity`, no qué credencial se usa.
 
 ## Permisos (`policy_json`)
 
