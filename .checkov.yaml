@@ -1,0 +1,12 @@
+framework:
+  - terraform
+directory:
+  - modules
+download-external-modules: false
+compact: true
+quiet: false
+soft-fail: false
+skip-check:
+  # CKV_AWS_18: access logging del bucket de sitio se omite a propósito;
+  # el acceso ya queda registrado en los logs de CloudFront (origen único, OAC).
+  - CKV_AWS_18
