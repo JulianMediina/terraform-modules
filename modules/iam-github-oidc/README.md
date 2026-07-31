@@ -23,6 +23,19 @@ allowed_subjects = [
 
 Esto requiere configurar un GitHub Environment con el mismo nombre (`produccion`, etc.) en ambos repositorios, con las reglas de protección/aprobación correspondientes.
 
+## Limitación real de GitHub OIDC con `pull_request`
+
+El claim `sub` con formato `repo:<org>/<repo>:environment:<nombre>` **solo** lo emite GitHub para eventos como `push`, `workflow_dispatch` o `release` — no para `pull_request`, aunque el job declare `environment:`. En un evento `pull_request`, el `sub` siempre es `repo:<org>/<repo>:pull_request`, sin importar el ambiente. Si algún workflow necesita asumir el rol durante un `pull_request` (por ejemplo, un `terraform plan` comentado en el PR), hay que añadir ese patrón explícitamente:
+
+```hcl
+allowed_subjects = [
+  "repo:JulianMediina/terraform-live:environment:produccion",
+  "repo:JulianMediina/terraform-live:pull_request",
+]
+```
+
+El ambiente real que termina usando cada job de todos modos queda acotado por **qué secret `AWS_ROLE_ARN` expone GitHub** según el `environment:` del job — el `sub` amplio solo decide si GitHub deja pasar el `AssumeRoleWithWebIdentity`, no qué credencial se usa.
+
 ## Permisos (`policy_json`)
 
 El módulo no asume qué puede hacer el rol: quien lo invoca construye el documento de política (least-privilege, acotado por ARN al ambiente correspondiente) y lo pasa en `policy_json`. Esto evita que el módulo termine siendo un "rol admin genérico" reutilizado sin revisar el alcance real necesario en cada ambiente.
