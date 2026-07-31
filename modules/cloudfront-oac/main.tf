@@ -118,6 +118,24 @@ data "aws_iam_policy_document" "oac_access" {
       values   = [aws_cloudfront_distribution.site.arn]
     }
   }
+
+  statement {
+    sid    = "DenyInsecureTransport"
+    effect = "Deny"
+    actions = [
+      "s3:*"
+    ]
+    resources = [var.bucket_arn, "${var.bucket_arn}/*"]
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
 }
 
 resource "aws_s3_bucket_policy" "oac_access" {
