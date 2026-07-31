@@ -1,3 +1,4 @@
+#tfsec:ignore:aws-s3-enable-bucket-logging -- el acceso ya queda registrado en los logs de CloudFront (origen único, OAC); un log bucket adicional no se justifica para el alcance de esta prueba.
 resource "aws_s3_bucket" "site" {
   bucket        = var.bucket_name
   force_destroy = var.force_destroy

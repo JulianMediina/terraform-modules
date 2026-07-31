@@ -1,3 +1,4 @@
+#tfsec:ignore:aws-sns-topic-encryption-use-cmk -- el tópico solo transporta notificaciones de alarmas de CloudWatch (no datos sensibles); una CMK dedicada añade costo sin beneficio real. Ya usa cifrado con la llave administrada de AWS (alias/aws/sns).
 resource "aws_sns_topic" "alarms" {
   name              = "daviplata-${var.environment}-alarms"
   kms_master_key_id = "alias/aws/sns"

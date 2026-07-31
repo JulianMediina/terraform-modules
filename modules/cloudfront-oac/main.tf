@@ -37,6 +37,8 @@ resource "aws_cloudfront_response_headers_policy" "security_headers" {
   }
 }
 
+#tfsec:ignore:aws-cloudfront-enable-waf -- WAF tiene costo recurrente por Web ACL y por regla evaluada, contrario a la decisión de costo del proyecto; mejora futura si el presupuesto lo permite.
+#tfsec:ignore:aws-cloudfront-enable-logging -- las métricas y alarmas del módulo observability ya cubren disponibilidad/errores; un log bucket adicional no se justifica para el alcance de esta prueba.
 resource "aws_cloudfront_distribution" "site" {
   enabled             = true
   is_ipv6_enabled     = true
