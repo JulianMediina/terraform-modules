@@ -27,7 +27,7 @@ module "gha_role" {
   environment          = "integracion"
   create_oidc_provider = true
   allowed_subjects = [
-    "repo:julian-mediina/daviplata-app:environment:integracion",
+    "repo:JulianMediina/daviplata-app:environment:integracion",
   ]
   policy_json = data.aws_iam_policy_document.example_least_privilege.json
 }

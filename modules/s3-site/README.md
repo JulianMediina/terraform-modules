@@ -14,7 +14,7 @@ Bucket S3 privado para alojar un sitio estático servido detrás de CloudFront (
 
 ```hcl
 module "site_bucket" {
-  source  = "git::https://github.com/julian-mediina/terraform-modules.git//modules/s3-site?ref=v0.1.0"
+  source  = "git::https://github.com/JulianMediina/terraform-modules.git//modules/s3-site?ref=v0.1.0"
 
   bucket_name = "daviplata-integracion-site"
   environment = "integracion"

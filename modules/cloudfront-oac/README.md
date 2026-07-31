@@ -17,7 +17,7 @@ El bucket se crea antes que la distribución, pero la política que lo protege n
 
 ```hcl
 module "cdn" {
-  source  = "git::https://github.com/julian-mediina/terraform-modules.git//modules/cloudfront-oac?ref=v0.1.0"
+  source  = "git::https://github.com/JulianMediina/terraform-modules.git//modules/cloudfront-oac?ref=v0.1.0"
 
   environment                 = "produccion"
   bucket_id                   = module.site_bucket.bucket_id

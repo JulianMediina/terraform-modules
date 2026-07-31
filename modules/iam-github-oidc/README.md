@@ -16,8 +16,8 @@ Por diseño (ver `GUIA-PRUEBA-DEVSECOPS_v2.md` §0/§8), cada ambiente tiene un 
 
 ```hcl
 allowed_subjects = [
-  "repo:julian-mediina/terraform-live:environment:produccion",
-  "repo:julian-mediina/daviplata-app:environment:produccion",
+  "repo:JulianMediina/terraform-live:environment:produccion",
+  "repo:JulianMediina/daviplata-app:environment:produccion",
 ]
 ```
 
@@ -31,14 +31,14 @@ El módulo no asume qué puede hacer el rol: quien lo invoca construye el docume
 
 ```hcl
 module "gha_role_produccion" {
-  source  = "git::https://github.com/julian-mediina/terraform-modules.git//modules/iam-github-oidc?ref=v0.1.0"
+  source  = "git::https://github.com/JulianMediina/terraform-modules.git//modules/iam-github-oidc?ref=v0.1.0"
 
   environment                = "produccion"
   create_oidc_provider       = false
   existing_oidc_provider_arn = module.gha_role_integracion.oidc_provider_arn
   allowed_subjects = [
-    "repo:julian-mediina/terraform-live:environment:produccion",
-    "repo:julian-mediina/daviplata-app:environment:produccion",
+    "repo:JulianMediina/terraform-live:environment:produccion",
+    "repo:JulianMediina/daviplata-app:environment:produccion",
   ]
   policy_json = data.aws_iam_policy_document.produccion_least_privilege.json
   tags        = local.common_tags

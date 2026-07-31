@@ -13,7 +13,7 @@ provider "aws" {
 }
 
 module "certificate" {
-  source  = "git::https://github.com/julian-mediina/terraform-modules.git//modules/acm?ref=v0.1.0"
+  source  = "git::https://github.com/JulianMediina/terraform-modules.git//modules/acm?ref=v0.1.0"
   providers = {
     aws = aws.us_east_1
   }

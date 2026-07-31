@@ -13,7 +13,7 @@ Alarmas de CloudWatch, dashboard y tópico SNS para una distribución CloudFront
 
 ```hcl
 module "observability" {
-  source  = "git::https://github.com/julian-mediina/terraform-modules.git//modules/observability?ref=v0.1.0"
+  source  = "git::https://github.com/JulianMediina/terraform-modules.git//modules/observability?ref=v0.1.0"
 
   environment          = "produccion"
   distribution_id      = module.cdn.distribution_id
