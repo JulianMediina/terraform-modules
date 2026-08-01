@@ -6,10 +6,10 @@ Módulos Terraform reutilizables para la plataforma de DaviPlata. Este repositor
 
 | Módulo | Qué crea |
 |---|---|
-| [`modules/s3-site`](modules/s3-site) | Bucket S3 privado (versionado, cifrado, Block Public Access) para el origen del sitio estático |
-| [`modules/cloudfront-oac`](modules/cloudfront-oac) | Distribución CloudFront con Origin Access Control, HTTPS forzado y cabeceras de seguridad |
+| [`modules/ecr`](modules/ecr) | Repositorio ECR privado (cifrado, escaneo de vulnerabilidades, tags inmutables) como origen de imágenes |
+| [`modules/ecs-express`](modules/ecs-express) | Servicio ECS Express Mode (Fargate + ALB + auto-scaling en un solo recurso) que sirve la imagen del repositorio ECR |
 | [`modules/acm`](modules/acm) | Certificado ACM validado por DNS (opcional, solo si se usa dominio propio) |
-| [`modules/observability`](modules/observability) | Alarmas de CloudWatch, dashboard y tópico SNS |
+| [`modules/observability`](modules/observability) | Alarmas de CloudWatch, dashboard y tópico SNS para el servicio ECS |
 | [`modules/iam-github-oidc`](modules/iam-github-oidc) | Rol IAM por ambiente asumible por GitHub Actions vía OIDC |
 
 ## Convenciones

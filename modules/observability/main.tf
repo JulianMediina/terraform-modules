@@ -13,21 +13,21 @@ resource "aws_sns_topic_subscription" "email" {
   endpoint  = each.value
 }
 
-resource "aws_cloudwatch_metric_alarm" "error_rate" {
-  alarm_name          = "daviplata-${var.environment}-error-rate"
-  alarm_description   = "Tasa de errores 4xx+5xx de CloudFront por encima del umbral."
-  namespace           = "AWS/CloudFront"
-  metric_name         = "TotalErrorRate"
+resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
+  alarm_name          = "daviplata-${var.environment}-cpu-utilization"
+  alarm_description   = "Uso de CPU del servicio ECS por encima del umbral."
+  namespace           = "AWS/ECS"
+  metric_name         = "CPUUtilization"
   statistic           = "Average"
   comparison_operator = "GreaterThanThreshold"
-  threshold           = var.error_rate_threshold
+  threshold           = var.cpu_utilization_threshold
   evaluation_periods  = var.evaluation_periods
   period              = var.period_seconds
   treat_missing_data  = "notBreaching"
 
   dimensions = {
-    DistributionId = var.distribution_id
-    Region         = "Global"
+    ClusterName = var.cluster_name
+    ServiceName = var.service_name
   }
 
   alarm_actions = [aws_sns_topic.alarms.arn]
@@ -35,21 +35,21 @@ resource "aws_cloudwatch_metric_alarm" "error_rate" {
   tags          = var.tags
 }
 
-resource "aws_cloudwatch_metric_alarm" "origin_latency" {
-  alarm_name          = "daviplata-${var.environment}-origin-latency"
-  alarm_description   = "Latencia de origen de CloudFront por encima del umbral."
-  namespace           = "AWS/CloudFront"
-  metric_name         = "OriginLatency"
+resource "aws_cloudwatch_metric_alarm" "memory_utilization" {
+  alarm_name          = "daviplata-${var.environment}-memory-utilization"
+  alarm_description   = "Uso de memoria del servicio ECS por encima del umbral."
+  namespace           = "AWS/ECS"
+  metric_name         = "MemoryUtilization"
   statistic           = "Average"
   comparison_operator = "GreaterThanThreshold"
-  threshold           = var.origin_latency_threshold_ms
+  threshold           = var.memory_utilization_threshold
   evaluation_periods  = var.evaluation_periods
   period              = var.period_seconds
   treat_missing_data  = "notBreaching"
 
   dimensions = {
-    DistributionId = var.distribution_id
-    Region         = "Global"
+    ClusterName = var.cluster_name
+    ServiceName = var.service_name
   }
 
   alarm_actions = [aws_sns_topic.alarms.arn]
@@ -69,11 +69,11 @@ resource "aws_cloudwatch_dashboard" "site" {
         width  = 12
         height = 6
         properties = {
-          title  = "Requests"
+          title  = "CPU (%)"
           view   = "timeSeries"
           region = "us-east-1"
           metrics = [
-            ["AWS/CloudFront", "Requests", "DistributionId", var.distribution_id, "Region", "Global"]
+            ["AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.service_name]
           ]
         }
       },
@@ -84,43 +84,14 @@ resource "aws_cloudwatch_dashboard" "site" {
         width  = 12
         height = 6
         properties = {
-          title  = "Tasa de error total (%)"
+          title  = "Memoria (%)"
           view   = "timeSeries"
           region = "us-east-1"
           metrics = [
-            ["AWS/CloudFront", "TotalErrorRate", "DistributionId", var.distribution_id, "Region", "Global"]
+            ["AWS/ECS", "MemoryUtilization", "ClusterName", var.cluster_name, "ServiceName", var.service_name]
           ]
         }
       },
-      {
-        type   = "metric"
-        x      = 0
-        y      = 6
-        width  = 12
-        height = 6
-        properties = {
-          title  = "Latencia de origen (ms)"
-          view   = "timeSeries"
-          region = "us-east-1"
-          metrics = [
-            ["AWS/CloudFront", "OriginLatency", "DistributionId", var.distribution_id, "Region", "Global"]
-          ]
-        }
-      },
-      {
-        type   = "metric"
-        x      = 12
-        y      = 6
-        width  = 12
-        height = 6
-        properties = {
-          title  = "Cache hit rate (%)"
-          view   = "timeSeries"
-          region = "us-east-1"
-          metrics = [
-            ["AWS/CloudFront", "CacheHitRate", "DistributionId", var.distribution_id, "Region", "Global"]
-          ]
-        }
       }
     ]
   })

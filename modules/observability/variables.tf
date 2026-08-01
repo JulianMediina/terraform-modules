@@ -8,8 +8,13 @@ variable "environment" {
   }
 }
 
-variable "distribution_id" {
-  description = "ID de la distribución CloudFront a monitorear."
+variable "cluster_name" {
+  description = "Nombre del cluster ECS a monitorear (dimensión ClusterName en CloudWatch)."
+  type        = string
+}
+
+variable "service_name" {
+  description = "Nombre del servicio ECS a monitorear (dimensión ServiceName en CloudWatch)."
   type        = string
 }
 
@@ -19,16 +24,16 @@ variable "notification_emails" {
   default     = []
 }
 
-variable "error_rate_threshold" {
-  description = "Umbral (%) de tasa de error 4xx+5xx que dispara la alarma."
+variable "cpu_utilization_threshold" {
+  description = "Umbral (%) de uso de CPU que dispara la alarma."
   type        = number
-  default     = 5
+  default     = 80
 }
 
-variable "origin_latency_threshold_ms" {
-  description = "Umbral de latencia de origen (ms) que dispara la alarma."
+variable "memory_utilization_threshold" {
+  description = "Umbral (%) de uso de memoria que dispara la alarma."
   type        = number
-  default     = 2000
+  default     = 80
 }
 
 variable "evaluation_periods" {
