@@ -21,7 +21,7 @@ Módulos Terraform reutilizables para la plataforma de DaviPlata. Este repositor
 
 ## Versionamiento
 
-Cambios en `modules/` se mergean a `main` vía PR (fmt, validate, tflint, tfsec, checkov obligatorios). Al etiquetar un commit de `main` con `vX.Y.Z`, el workflow `module-ci.yml` confirma que el tag pertenece a `main` antes de darlo por válido. `terraform-live` fija esa versión en `source = ...?ref=vX.Y.Z`.
+Este repo es el único de la plataforma que se queda en **trunk-based development** puro: no tiene "ambientes" (no se despliega, se versiona), así que no aplica el modelo de rama por ambiente que sí usan `terraform-live` y `daviplata-app`. Aun así, ningún cambio va directo a `main` — todo commit entra por PR desde una rama `feature/*` (o `fix/*`), igual que en el resto de repos. Cambios en `modules/` se mergean a `main` vía ese PR (fmt, validate, tflint, tfsec, checkov obligatorios). Al etiquetar un commit de `main` con `vX.Y.Z`, el workflow `module-ci.yml` confirma que el tag pertenece a `main` antes de darlo por válido. `terraform-live` fija esa versión en `source = ...?ref=vX.Y.Z`.
 
 ## Pipeline
 
