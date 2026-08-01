@@ -7,7 +7,7 @@ Distribución CloudFront delante de un bucket S3 privado, usando Origin Access C
 - `aws_cloudfront_origin_access_control` — reemplazo moderno de OAI, firma las peticiones al origen S3 con SigV4.
 - `aws_cloudfront_response_headers_policy` — CSP, HSTS (con preload), `X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy`.
 - `aws_cloudfront_distribution` — `viewer_protocol_policy = redirect-to-https`, TLS mínimo 1.2, price class configurable.
-- `aws_s3_bucket_policy` sobre el bucket recibido por variable, con condición `AWS:SourceArn` restringida al ARN de **esta** distribución (evita el problema conocido de políticas OAC demasiado permisivas entre distribuciones).
+- `aws_s3_bucket_policy` sobre el bucket recibido por variable: permite lectura solo a `AWS:SourceArn` de **esta** distribución (evita el problema conocido de políticas OAC demasiado permisivas entre distribuciones), exige TLS, y **deniega explícitamente cualquier escritura** (`PutObject`/`DeleteObject`/tags) salvo que la llame el rol `gha-<environment>` — así ni una carga manual con credenciales de administrador, ni el usuario root de la cuenta, pueden modificar el contenido del sitio por fuera del pipeline.
 
 ## Por qué la política de bucket vive aquí y no en `s3-site`
 

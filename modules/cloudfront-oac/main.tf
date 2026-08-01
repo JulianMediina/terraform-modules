@@ -99,6 +99,8 @@ resource "aws_cloudfront_distribution" "site" {
   })
 }
 
+data "aws_caller_identity" "current" {}
+
 data "aws_iam_policy_document" "oac_access" {
   statement {
     sid     = "AllowCloudFrontServicePrincipal"
@@ -134,6 +136,33 @@ data "aws_iam_policy_document" "oac_access" {
       test     = "Bool"
       variable = "aws:SecureTransport"
       values   = ["false"]
+    }
+  }
+
+  # Nadie escribe en el bucket salvo el rol OIDC del pipeline de este mismo
+  # ambiente -ni un usuario IAM con AdministratorAccess, ni el root de la
+  # cuenta-: un Deny explícito en una política de recurso gana siempre sobre
+  # cualquier Allow, sin excepción. Es la forma de bloquear cargas manuales
+  # que no vengan del pipeline sin depender de Organizations/SCPs.
+  statement {
+    sid    = "DenyWritesExceptPipeline"
+    effect = "Deny"
+    actions = [
+      "s3:PutObject",
+      "s3:PutObjectAcl",
+      "s3:PutObjectTagging",
+      "s3:DeleteObject",
+      "s3:DeleteObjectTagging",
+    ]
+    resources = ["${var.bucket_arn}/*"]
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "StringNotEquals"
+      variable = "aws:PrincipalArn"
+      values   = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/gha-${var.environment}"]
     }
   }
 }
