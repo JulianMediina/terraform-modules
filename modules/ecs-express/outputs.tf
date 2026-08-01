@@ -10,7 +10,7 @@ output "cluster_name" {
 
 output "service_name" {
   description = "Nombre del servicio, usado por el pipeline y por el módulo observability (dimensión ServiceName)."
-  value       = aws_ecs_express_gateway_service.site.name
+  value       = "daviplata-${var.environment}"
 }
 
 # Ruta exacta del atributo por confirmar contra el schema real del provider

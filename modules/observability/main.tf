@@ -91,7 +91,6 @@ resource "aws_cloudwatch_dashboard" "site" {
             ["AWS/ECS", "MemoryUtilization", "ClusterName", var.cluster_name, "ServiceName", var.service_name]
           ]
         }
-      },
       }
     ]
   })

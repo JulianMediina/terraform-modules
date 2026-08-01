@@ -35,8 +35,8 @@ module "service" {
 module "observability" {
   source = "../../modules/observability"
 
-  environment          = "integracion"
-  cluster_name         = module.service.cluster_name
-  service_name         = module.service.service_name
-  notification_emails  = ["oncall@example.com"]
+  environment         = "integracion"
+  cluster_name        = module.service.cluster_name
+  service_name        = module.service.service_name
+  notification_emails = ["oncall@example.com"]
 }

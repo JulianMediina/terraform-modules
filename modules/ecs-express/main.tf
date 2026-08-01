@@ -56,8 +56,8 @@ resource "aws_ecs_cluster" "site" {
 # forma del servicio, no qué build está activo). lifecycle ignora ese campo
 # para que un apply posterior a un despliegue real no lo revierta.
 resource "aws_ecs_express_gateway_service" "site" {
-  name    = "daviplata-${var.environment}"
-  cluster = aws_ecs_cluster.site.name
+  service_name = "daviplata-${var.environment}"
+  cluster      = aws_ecs_cluster.site.name
 
   execution_role_arn      = aws_iam_role.execution.arn
   infrastructure_role_arn = aws_iam_role.infrastructure.arn
