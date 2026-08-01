@@ -86,11 +86,17 @@ resource "aws_cloudfront_distribution" "site" {
     }
   }
 
+  # Con el certificado por defecto de CloudFront (*.cloudfront.net, sin
+  # dominio propio) AWS ignora cualquier minimum_protocol_version pedido y
+  # siempre lo deja en TLSv1 -pedir TLSv1.2_2021 en ese caso no falla, pero
+  # crea un drift perpetuo que "terraform plan" nunca puede resolver. Solo se
+  # puede exigir una versión mínima de TLS más alta con un certificado ACM +
+  # SNI propio (dominio propio), que es cuando de verdad aplica.
   viewer_certificate {
     cloudfront_default_certificate = var.acm_certificate_arn == null
     acm_certificate_arn            = var.acm_certificate_arn
     ssl_support_method             = var.acm_certificate_arn == null ? null : "sni-only"
-    minimum_protocol_version       = "TLSv1.2_2021"
+    minimum_protocol_version       = var.acm_certificate_arn == null ? "TLSv1" : "TLSv1.2_2021"
   }
 
   tags = merge(var.tags, {
