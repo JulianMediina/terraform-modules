@@ -1,6 +1,6 @@
 output "service_arn" {
   description = "ARN del servicio, usado por el pipeline para actualizar la imagen desplegada."
-  value       = aws_ecs_express_gateway_service.site.arn
+  value       = aws_ecs_express_gateway_service.site.service_arn
 }
 
 output "cluster_name" {
@@ -13,13 +13,9 @@ output "service_name" {
   value       = "daviplata-${var.environment}"
 }
 
-# Ruta exacta del atributo por confirmar contra el schema real del provider
-# en el primer "terraform plan" en CI (recurso nuevo, sin registro público
-# navegable al momento de escribir esto); si difiere, se corrige aquí sin
-# tocar los módulos que lo consumen.
 output "service_endpoint" {
   description = "URL pública HTTPS del servicio."
-  value       = try(aws_ecs_express_gateway_service.site.active_configurations[0].ingress_paths[0].endpoint, null)
+  value       = aws_ecs_express_gateway_service.site.ingress_paths[0].endpoint
 }
 
 output "execution_role_arn" {

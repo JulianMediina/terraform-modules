@@ -26,15 +26,15 @@ variable "container_port" {
 }
 
 variable "cpu" {
-  description = "CPU de la tarea Fargate, en unidades ECS (256 = 0.25 vCPU)."
-  type        = number
-  default     = 256
+  description = "CPU de la tarea Fargate, en unidades ECS (\"256\" = 0.25 vCPU)."
+  type        = string
+  default     = "256"
 }
 
 variable "memory" {
   description = "Memoria de la tarea Fargate, en MB."
-  type        = number
-  default     = 512
+  type        = string
+  default     = "512"
 }
 
 variable "min_task_count" {
