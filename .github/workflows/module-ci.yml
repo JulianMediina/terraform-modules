@@ -15,6 +15,32 @@ env:
   TF_VERSION: "1.9.8"
 
 jobs:
+  branch-name:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      # Trunk-based a main, pero todo cambio entra por rama feature/fix -
+      # nunca un push directo a main (eso ya lo bloquea branch protection,
+      # esto valida la convención de nombre).
+      - name: Validar convención de nombre de rama
+        run: |
+          head="${{ github.head_ref }}"
+          if [[ ! "$head" =~ ^(feature|fix)/.+ ]]; then
+            echo "PR hacia main debe venir de feature/* o fix/* (rama: '$head')." >&2
+            exit 1
+          fi
+
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   fmt-validate:
     runs-on: ubuntu-latest
     steps:
@@ -30,6 +56,18 @@ jobs:
       - name: terraform validate (por módulo)
         run: |
           for dir in modules/*/; do
+            echo "== $dir =="
+            terraform -chdir="$dir" init -backend=false -input=false
+            terraform -chdir="$dir" validate
+          done
+
+      # "examples/" es la prueba de integración de cada módulo: valida que
+      # las variables/tipos declarados en el ejemplo realmente encajan con
+      # la interfaz del módulo. No hace falta backend ni credenciales AWS
+      # -"validate" no habla con la nube, solo revisa la config localmente.
+      - name: terraform validate (examples, prueba de integración por módulo)
+        run: |
+          for dir in examples/*/; do
             echo "== $dir =="
             terraform -chdir="$dir" init -backend=false -input=false
             terraform -chdir="$dir" validate
