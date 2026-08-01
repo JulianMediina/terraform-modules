@@ -14,13 +14,13 @@ provider "aws" {
 }
 
 resource "aws_kms_key" "example" {
-  description = "Ejemplo de llave para el módulo s3-site"
+  description = "Ejemplo de llave para el módulo ecr"
 }
 
-module "site_bucket" {
-  source = "../../modules/s3-site"
+module "registry" {
+  source = "../../modules/ecr"
 
-  bucket_name = "daviplata-example-site"
-  environment = "integracion"
-  kms_key_arn = aws_kms_key.example.arn
+  repository_name = "daviplata-example-site"
+  environment     = "integracion"
+  kms_key_arn     = aws_kms_key.example.arn
 }
