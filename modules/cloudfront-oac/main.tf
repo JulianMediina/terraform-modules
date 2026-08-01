@@ -92,6 +92,7 @@ resource "aws_cloudfront_distribution" "site" {
   # crea un drift perpetuo que "terraform plan" nunca puede resolver. Solo se
   # puede exigir una versión mínima de TLS más alta con un certificado ACM +
   # SNI propio (dominio propio), que es cuando de verdad aplica.
+  #tfsec:ignore:aws-cloudfront-use-secure-tls-policy -- TLSv1 es lo único que AWS permite sin un certificado ACM propio (dominio custom); no es una elección, es la única opción real con el certificado *.cloudfront.net compartido.
   viewer_certificate {
     cloudfront_default_certificate = var.acm_certificate_arn == null
     acm_certificate_arn            = var.acm_certificate_arn
