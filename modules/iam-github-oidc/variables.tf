@@ -1,10 +1,10 @@
 variable "environment" {
-  description = "Ambiente al que pertenece el rol (integracion, laboratorio, produccion)."
+  description = "Ambiente o identificador del rol (integracion, laboratorio, produccion, o foundation para el rol que se usa a sí mismo en terraform-foundation)."
   type        = string
 
   validation {
-    condition     = contains(["integracion", "laboratorio", "produccion"], var.environment)
-    error_message = "environment debe ser integracion, laboratorio o produccion."
+    condition     = contains(["integracion", "laboratorio", "produccion", "foundation"], var.environment)
+    error_message = "environment debe ser integracion, laboratorio, produccion o foundation."
   }
 }
 
