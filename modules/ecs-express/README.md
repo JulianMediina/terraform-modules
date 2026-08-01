@@ -25,6 +25,7 @@ module "service" {
 
   environment    = "integracion"
   repository_url = module.registry.repository_url
+  kms_key_arn    = data.aws_kms_alias.site.target_key_arn # la misma llave que recibió module.registry
   tags           = local.common_tags
 }
 ```
@@ -35,6 +36,7 @@ module "service" {
 |---|---|---|---|
 | `environment` | string | — | `integracion` \| `laboratorio` \| `produccion` |
 | `repository_url` | string | — | URL del repositorio ECR de origen |
+| `kms_key_arn` | string | — | ARN de la llave KMS que cifra el repositorio ECR |
 | `initial_image_tag` | string | `"bootstrap"` | Tag usado solo en la creación inicial |
 | `container_port` | number | `8080` | Puerto del contenedor |
 | `cpu` | number | `256` | CPU de la tarea Fargate (unidades ECS) |

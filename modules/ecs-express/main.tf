@@ -21,6 +21,24 @@ resource "aws_iam_role_policy_attachment" "execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+# El repositorio ECR se cifra con una llave KMS administrada por el cliente
+# (no la llave por defecto de ECR): sin este permiso explícito, ECS falla al
+# lanzar la tarea con AccessDenied al intentar descifrar la imagen, aunque el
+# rol de ejecución ya tenga permiso de pull vía la policy administrada.
+data "aws_iam_policy_document" "execution_kms" {
+  statement {
+    effect    = "Allow"
+    actions   = ["kms:Decrypt", "kms:DescribeKey"]
+    resources = [var.kms_key_arn]
+  }
+}
+
+resource "aws_iam_role_policy" "execution_kms" {
+  name   = "ecs-express-${var.environment}-execution-kms"
+  role   = aws_iam_role.execution.id
+  policy = data.aws_iam_policy_document.execution_kms.json
+}
+
 data "aws_iam_policy_document" "infrastructure_trust" {
   statement {
     effect  = "Allow"

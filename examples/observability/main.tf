@@ -30,6 +30,7 @@ module "service" {
 
   environment    = "integracion"
   repository_url = module.registry.repository_url
+  kms_key_arn    = aws_kms_key.example.arn
 }
 
 module "observability" {

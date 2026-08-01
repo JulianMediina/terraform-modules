@@ -13,6 +13,11 @@ variable "repository_url" {
   type        = string
 }
 
+variable "kms_key_arn" {
+  description = "ARN de la llave KMS usada para cifrar el repositorio ECR (misma que module.ecr.kms_key_arn recibió); el rol de ejecución necesita descifrar con ella para poder hacer pull de la imagen."
+  type        = string
+}
+
 variable "initial_image_tag" {
   description = "Tag de imagen usado únicamente en la creación inicial del servicio. Los despliegues reales actualizan la imagen fuera de Terraform; ver nota de lifecycle en main.tf."
   type        = string

@@ -1,5 +1,5 @@
 output "repository_url" {
-  description = "URL del repositorio, usada para docker push/pull y como origen del servicio App Runner."
+  description = "URL del repositorio, usada para docker push/pull y como origen del servicio ECS Express."
   value       = aws_ecr_repository.site.repository_url
 }
 
