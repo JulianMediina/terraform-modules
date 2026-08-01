@@ -53,6 +53,12 @@ jobs:
       - name: terraform fmt
         run: terraform fmt -check -recursive
 
+      - name: DEBUG schema ecs-express
+        run: |
+          terraform -chdir=modules/ecs-express init -backend=false -input=false
+          terraform -chdir=modules/ecs-express providers schema -json > /tmp/schema.json
+          jq '.provider_schemas["registry.terraform.io/hashicorp/aws"].resource_schemas.aws_ecs_express_gateway_service' /tmp/schema.json
+
       - name: terraform validate (por módulo)
         run: |
           for dir in modules/*/; do
