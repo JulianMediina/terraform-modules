@@ -101,9 +101,17 @@ resource "aws_ecs_express_gateway_service" "site" {
 
   health_check_path = var.health_check_path
 
+  # auto_scaling_metric/auto_scaling_target_value son "optional+computed" en
+  # el schema del provider: dejarlos sin fijar dispara "Provider produced
+  # inconsistent result after apply" en este recurso (AWS los rellena en el
+  # backend con estos mismos valores, pero el provider no los marca como
+  # unknown en el plan). Fijarlos explícitamente evita el bug sin cambiar el
+  # comportamiento real.
   scaling_target {
-    min_task_count = var.min_task_count
-    max_task_count = var.max_task_count
+    min_task_count            = var.min_task_count
+    max_task_count            = var.max_task_count
+    auto_scaling_metric       = "AVERAGE_CPU"
+    auto_scaling_target_value = 60
   }
 
   tags = merge(var.tags, {
