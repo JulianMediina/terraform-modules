@@ -6,3 +6,11 @@ download-external-modules: false
 compact: true
 quiet: false
 soft-fail: false
+skip-check:
+  # CKV2_AWS_34: los parámetros que crea ssm-publish son valores de
+  # infraestructura no sensibles (ARNs, nombres de recursos, URLs) por
+  # contrato del propio módulo — cifrarlos solo agregaría una dependencia de
+  # kms:Decrypt sin reducir exposición real. Es un check de grafo (CKV2_*):
+  # el comentario inline #checkov:skip no lo suprime de forma confiable, hay
+  # que listarlo aquí.
+  - CKV2_AWS_34

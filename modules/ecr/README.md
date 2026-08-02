@@ -1,6 +1,6 @@
 # Módulo: ecr
 
-Repositorio ECR privado como origen de imágenes para el módulo `apprunner`. Cifrado con KMS, escaneo de vulnerabilidades en cada push y tags inmutables (una vez publicado un tag `vX.Y.Z` no puede sobrescribirse, solo expirar).
+Repositorio ECR privado como origen de imágenes para el módulo `ecs-express`. Cifrado con KMS, escaneo de vulnerabilidades en cada push y tags inmutables (una vez publicado un tag `vX.Y.Z` no puede sobrescribirse, solo expirar).
 
 ## Qué crea
 
@@ -36,7 +36,7 @@ module "registry" {
 
 | Nombre | Descripción |
 |---|---|
-| `repository_url` | URL del repositorio, usada por el pipeline (`docker push`) y por `apprunner.repository_url` |
+| `repository_url` | URL del repositorio, usada por el pipeline (`docker push`) y por `ecs-express.repository_url` |
 | `repository_arn` | ARN del repositorio |
 | `repository_name` | Nombre del repositorio |
 
