@@ -48,6 +48,18 @@ variable "period_seconds" {
   default     = 300
 }
 
+variable "enable_response_time_alarm" {
+  description = "Crea la alarma de tiempo de respuesta del balanceador (ver notas en main.tf: el ALB de ECS Express Mode es único y compartido por los 3 ambientes de la cuenta, así que esta alarma normalmente solo se habilita en un ambiente para no triplicar el mismo dato bajo 3 nombres distintos)."
+  type        = bool
+  default     = false
+}
+
+variable "response_time_threshold_seconds" {
+  description = "Umbral (segundos) de tiempo de respuesta del balanceador que dispara la alarma."
+  type        = number
+  default     = 2
+}
+
 variable "tags" {
   description = "Tags comunes a aplicar a los recursos de observabilidad."
   type        = map(string)

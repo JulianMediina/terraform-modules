@@ -7,7 +7,8 @@ Alarmas de CloudWatch, dashboard y tópico SNS para un servicio ECS Express Mode
 - `aws_sns_topic` + suscripciones por email (una por cada entrada de `notification_emails`). Para Slack/Teams, suscribir un endpoint HTTPS (webhook) al mismo tópico fuera de este módulo o extendiendo `notification_emails` a una variable de endpoints tipados.
 - Alarma de uso de CPU (`CPUUtilization`) sobre `cpu_utilization_threshold`.
 - Alarma de uso de memoria (`MemoryUtilization`) sobre `memory_utilization_threshold`.
-- Dashboard con CPU y memoria del servicio.
+- Opcionalmente (`enable_response_time_alarm = true`), alarma de tiempo de respuesta (`TargetResponseTime`) del balanceador. El ALB de ECS Express Mode es único por cuenta/región y lo comparten los 3 ambientes -no hay uno por ambiente-, así que esta alarma normalmente solo se habilita en un ambiente (ver notas en `main.tf`); se ubica por tag (`Component = ecs-express`), no por nombre, porque AWS le asigna un sufijo aleatorio que Terraform no controla.
+- Dashboard con CPU y memoria del servicio (y tiempo de respuesta, si está habilitado).
 
 ## Uso
 
@@ -35,6 +36,8 @@ module "observability" {
 | `memory_utilization_threshold` | number | `80` | Umbral (%) de uso de memoria |
 | `evaluation_periods` | number | `2` | Períodos consecutivos antes de notificar |
 | `period_seconds` | number | `300` | Duración de cada período |
+| `enable_response_time_alarm` | bool | `false` | Crea la alarma (y el widget del dashboard) de tiempo de respuesta del ALB compartido |
+| `response_time_threshold_seconds` | number | `2` | Umbral (segundos) de tiempo de respuesta |
 | `tags` | map(string) | `{}` | Tags adicionales |
 
 ## Outputs
