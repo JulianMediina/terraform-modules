@@ -6,28 +6,3 @@ download-external-modules: false
 compact: true
 quiet: false
 soft-fail: false
-skip-check:
-  # CKV_AWS_18: access logging del bucket de sitio se omite a propósito;
-  # el acceso ya queda registrado en los logs de CloudFront (origen único, OAC).
-  - CKV_AWS_18
-  # CKV_AWS_86: logging de acceso de CloudFront se omite; las métricas y
-  # alarmas del módulo observability ya cubren disponibilidad/errores, y un
-  # log bucket adicional no se justifica para el alcance de esta prueba.
-  - CKV_AWS_86
-  # CKV_AWS_310 / CKV_AWS_144: failover de origen y replicación entre
-  # regiones son la evolución de HA/DR documentada como mejora futura
-  # (docs/answers-to-questions.md, pregunta 9); no se implementan en una
-  # cuenta única de alcance de prueba técnica.
-  - CKV_AWS_310
-  - CKV_AWS_144
-  # CKV_AWS_374: geo-restricción no aplica; el sitio es público por diseño y
-  # no hay un requisito de negocio que restrinja países.
-  - CKV_AWS_374
-  # CKV_AWS_68 / CKV2_AWS_47: WAF tiene costo recurrente por Web ACL y por
-  # regla evaluada, contrario a la decisión de costo del §13 de la guía
-  # interna; queda como mejora futura si el presupuesto lo permite.
-  - CKV_AWS_68
-  - CKV2_AWS_47
-  # CKV2_AWS_62: notificaciones de eventos del bucket no aplican; no hay
-  # procesamiento event-driven sobre los objetos del sitio estático.
-  - CKV2_AWS_62
