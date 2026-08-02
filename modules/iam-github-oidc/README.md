@@ -12,7 +12,7 @@ AWS solo permite un proveedor OIDC por URL en la cuenta (`token.actions.githubus
 
 ## Alcance del rol: mismo rol para infraestructura y aplicación
 
-Por diseño (ver `GUIA-PRUEBA-DEVSECOPS_v2.md` §0/§8), cada ambiente tiene un único rol OIDC usado tanto por el pipeline de `terraform-live` (para ese ambiente) como por el de `daviplata-app`. Esto se logra combinando en `allowed_subjects` los patrones `sub` de ambos repositorios, usando GitHub Environments para acotar el claim, por ejemplo:
+Por diseño, cada ambiente tiene un único rol OIDC usado tanto por el pipeline de `terraform-live` (para ese ambiente) como por el de `daviplata-app`. Esto se logra combinando en `allowed_subjects` los patrones `sub` de ambos repositorios, usando GitHub Environments para acotar el claim, por ejemplo:
 
 ```hcl
 allowed_subjects = [

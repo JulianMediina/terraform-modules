@@ -5,5 +5,15 @@
 *.tfplan
 crash.log
 crash.*.log
-.env
 .DS_Store
+
+# Secretos y credenciales — nunca deben llegar al repo
+.env
+.env.*
+.aws/
+*.pem
+*.key
+*.p12
+*.pfx
+credentials
+credentials.json
