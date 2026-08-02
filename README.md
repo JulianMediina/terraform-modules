@@ -21,8 +21,8 @@ Módulos Terraform reutilizables para la plataforma de DaviPlata. Este repositor
 
 ## Versionamiento
 
-Este repo es el único de la plataforma que se queda en **trunk-based development** puro: no tiene "ambientes" (no se despliega, se versiona), así que no aplica el modelo de rama por ambiente que sí usan `terraform-live` y `daviplata-app`. Aun así, ningún cambio va directo a `main` — todo commit entra por PR desde una rama `feature/*` (o `fix/*`), igual que en el resto de repos. Cambios en `modules/` se mergean a `main` vía ese PR (fmt, validate, tflint, tfsec, checkov obligatorios). Al etiquetar un commit de `main` con `vX.Y.Z`, el workflow `module-ci.yml` confirma que el tag pertenece a `main` antes de darlo por válido. `terraform-live` fija esa versión en `source = ...?ref=vX.Y.Z`.
+Este repo es el único de la plataforma que se queda en **trunk-based development** puro: no tiene "ambientes" (no se despliega, se versiona), así que no aplica el modelo de rama por ambiente que sí usan `terraform-live` y `daviplata-app`. Aun así, ningún cambio va directo a `main` — todo commit entra por PR desde una rama `feature/*` (o `fix/*`), igual que en el resto de repos, con título en formato Conventional Commits (`feat:`, `fix:`, etc. — validado por `amannn/action-semantic-pull-request`). El repo fuerza squash-merge únicamente, así que ese título queda como el mensaje del commit en `main`. Al mergear, `semantic-release` (job `release` en `module-ci.yml`) lee los Conventional Commits acumulados desde el último tag alcanzable y crea + empuja el tag `vX.Y.Z` automáticamente — ya no se etiqueta a mano. `terraform-live` fija esa versión en `source = ...?ref=vX.Y.Z`.
 
 ## Pipeline
 
-`.github/workflows/module-ci.yml`: `fmt` → `validate` (por módulo) → `tflint` → `tfsec` + `checkov` (bloqueantes) → validación de tag en push de `v*.*.*`.
+`.github/workflows/module-ci.yml`: título de PR (Conventional Commits) → `fmt` → `validate` (por módulo) → `tflint` → `tfsec` + `checkov` (bloqueantes) → al mergear a `main`, `semantic-release` calcula la versión y crea el tag.
